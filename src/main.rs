@@ -5,7 +5,7 @@ use std::{
 };
 
 use clap::Parser;
-use log::{error, info, trace, warn};
+use log::{error, info, trace, warn, LevelFilter};
 use tempfile::NamedTempFile;
 
 #[derive(Parser, Debug)]
@@ -21,9 +21,10 @@ pub struct Params {
 const UTF8_BOM: [u8; 3] = [0xEF, 0xBB, 0xBF];
 
 fn main() -> Result<(), anyhow::Error> {
-    env_logger::init();
+    env_logger::builder().filter(None, LevelFilter::Info).init();
     let args = Params::parse_from(wild::args());
-    let mut first_error: Option<anyhow::Error> = None;
+    let mut last_error: Option<anyhow::Error> = None;
+    let mut count = 0;
 
     for filename in &args.files {
         let Ok(mut file) = File::open(filename) else {
@@ -37,13 +38,15 @@ fn main() -> Result<(), anyhow::Error> {
         }
 
         if let Err(e) = remove_bom(&file, filename, args.nobackup) {
-            if first_error.is_none() {
-                first_error = Some(e);
-            }
+            last_error = Some(e);
+            continue;
         }        
+        count += 1;
+        trace!("done processing");
     }
+    info!("{} file(s) processed", count);
 
-    if let Some(e) = first_error { Err(e) } else { Ok(()) }
+    if let Some(e) = last_error { Err(e) } else { Ok(()) }
 }
 
 fn remove_bom(mut file: &File, filename: &Path, nobackup: bool) -> Result<(), anyhow::Error> {

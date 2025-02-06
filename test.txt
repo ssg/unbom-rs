@@ -1,0 +1,3 @@
+this is a test BOM text
+
+don't run the tool directly on these as they'll be modified.
