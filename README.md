@@ -7,6 +7,9 @@ which basically removes UTF-8 BOM markers from files safely. UTF-8 BOM markers
 aren't useful, and can even cause problems with some tools that are not designed
 to handle them. Only use if you have problems with your UTF-8 files of course.
 
+## to do
+- [ ] implement `--recurse` in a cross-platform compatible way
+
 ## usage
 
 Remove UTF-8 markers from all "txt" files in the current directory, and save 
