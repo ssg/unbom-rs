@@ -5,6 +5,7 @@ edition = "2021"
 license = "MIT"
 authors = ["Sedat Kapanoglu <sedat@kapanoglu.com>"]
 description = "Remove UTF-8 BOM from files"
+homepage = "https://github.com/ssg/unbom-rs"
 
 [dependencies]
 anyhow = "1.0.95"
