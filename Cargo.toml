@@ -1,0 +1,15 @@
+[package]
+name = "unbom"
+version = "0.2.0"
+edition = "2021"
+license = "MIT"
+authors = ["Sedat Kapanoglu <sedat@kapanoglu.com>"]
+description = "Remove UTF-8 BOM from files"
+
+[dependencies]
+anyhow = "1.0.95"
+clap = { version = "4.5.27", features = ["derive", "env"] }
+env_logger = "0.11.6"
+log = "0.4.25"
+tempfile = "3.16.0"
+wild = "2.2.1"
