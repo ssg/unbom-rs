@@ -76,9 +76,9 @@ fn remove_bom(mut file: &File, filename: &Path, nobackup: bool) -> Result<(), an
     Ok(())
 }
 
-fn has_bom(file: &mut dyn Read) -> bool {
+fn has_bom<R: Read>(source: &mut R) -> bool {
     let mut buffer = [0; 3];
-    if file.read_exact(&mut buffer).inspect_err(|e| {
+    if source.read_exact(&mut buffer).inspect_err(|e| {
         warn!("cannot read the BOM: {}", e);
     }).is_err() {
         return false;
