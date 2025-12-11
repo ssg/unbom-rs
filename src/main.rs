@@ -53,7 +53,7 @@ fn remove_bom(mut file: &File, filename: &Path, nobackup: bool) -> Result<(), an
     info!("processing {}...", filename.display());
     let mut tempfile = create_tempfile(filename, file)?;
     std::io::copy(&mut file, &mut tempfile).inspect_err(|_| error!("cannot write to the temporary file"))?;
-    let bak_filename = filename.with_extension("bak");
+    let bak_filename = filename.with_added_extension("bak");
     std::fs::rename(filename, &bak_filename)
         .inspect_err(|_| error!("cannot create the backup file '{}'", filename.display()))?;
     if std::fs::rename(tempfile.path(), filename).is_err() {
