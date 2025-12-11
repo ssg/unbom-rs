@@ -97,3 +97,33 @@ fn create_tempfile(filename: &Path, input_file: &File) -> Result<NamedTempFile, 
         .inspect_err(|_| error!("cannot set the permissions of the temporary file"))?;
     Ok(tempfile)
 }
+
+#[cfg(test)]
+mod test {
+    use super::*;
+    use std::io::Cursor;
+
+    #[test]
+    fn test_has_bom() {
+        let test_cases = vec![
+            ("file with BOM and content", vec![0xEF, 0xBB, 0xBF, b'h', b'e', b'l', b'l', b'o'], true),
+            ("exactly 3 bytes with BOM", vec![0xEF, 0xBB, 0xBF], true),
+            ("file without BOM", vec![b'h', b'e', b'l', b'l', b'o'], false),
+            ("empty file", vec![], false),
+            ("file too short (1)", vec![0xEF], false),
+            ("file too short (2)", vec![0xEF, 0xBB], false),
+            ("exactly 3 bytes without BOM", vec![b'a', b'b', b'c'], false),
+            ("partial BOM match", vec![0xEF, 0xBB, 0x00, b'h', b'i'], false),
+        ];
+
+        for (description, data, expected) in test_cases {
+            let mut cursor = Cursor::new(data);
+            assert_eq!(
+                has_bom(&mut cursor),
+                expected,
+                "Failed test case: {}",
+                description
+            );
+        }
+    }
+}
